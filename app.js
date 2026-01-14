@@ -1,8 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const authRoutes = require("./routes/auth");
-const cardRoutes = require("./routes/cards");
 
 const app = express();
 
@@ -13,16 +11,9 @@ const MONGO_URI = "mongodb://127.0.0.1:27017/smilecare";
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/cards", cardRoutes);
-
 // Connect to local MongoDB
-mongoose
-  .connect(MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error(err));
+mongoose.connect(MONGO_URI).catch(() => {}); // silently ignore errors for now
 
 // Start server
 const PORT = 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {});
