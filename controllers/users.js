@@ -1,6 +1,7 @@
+const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
+
 const { CREATED_STATUS_CODE, OK_STATUS_CODE } = require("../utils/constants");
 const {
   BadRequestError,
@@ -72,7 +73,7 @@ const loginUser = async (req, res, next) => {
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "1h" },
     );
 
     res.status(OK_STATUS_CODE).json({
