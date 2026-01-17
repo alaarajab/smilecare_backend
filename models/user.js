@@ -27,10 +27,7 @@ const userSchema = new mongoose.Schema(
       select: false, // 🔐 exclude password by default
     },
 
-    savedCards: {
-      type: [String],
-      default: [],
-    },
+    savedTips: [{ type: mongoose.Schema.Types.ObjectId, ref: "DentalTip" }],
   },
   {
     timestamps: true,

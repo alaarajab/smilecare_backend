@@ -89,5 +89,44 @@ const loginUser = async (req, res, next) => {
     next(error);
   }
 };
+const getMe = async (req, res, next) => {
+  try {
+    // req.user is set by auth middleware (JWT verified)
+    const user = await User.findById(req.user.userId).select("-password");
+    if (!user) throw new NotFoundError("User not found");
 
-module.exports = { getUsers, getUserById, createUser, loginUser };
+    res.status(OK_STATUS_CODE).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+const toggleSavedTip = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { tipId } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.savedCards.includes(tipId)) {
+      user.savedCards = user.savedCards.filter((id) => id !== tipId);
+    } else {
+      user.savedCards.push(tipId);
+    }
+
+    await user.save();
+    res.status(200).json({ savedCards: user.savedCards });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { toggleSavedTip };
+module.exports = {
+  getUsers,
+  getUserById,
+  createUser,
+  loginUser,
+  getMe,
+  toggleSavedTip,
+};
