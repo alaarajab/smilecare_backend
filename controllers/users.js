@@ -121,7 +121,6 @@ const toggleSavedTip = async (req, res, next) => {
   }
 };
 
-module.exports = { toggleSavedTip };
 module.exports = {
   getUsers,
   getUserById,
