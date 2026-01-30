@@ -4,6 +4,7 @@ const router = express.Router();
 
 const userRoutes = require("./users");
 const contactRoutes = require("./contacts");
+const tipsRoutes = require("./tips");
 
 const { createUser, loginUser } = require("../controllers/users");
 const {
@@ -16,6 +17,7 @@ const {
 // -----------------------
 router.post("/register", validateUserBody, createUser);
 router.post("/login", validateLoginBody, loginUser);
+router.use("/tips", tipsRoutes);
 
 // -----------------------
 // Protected and other routes
@@ -30,7 +32,7 @@ router.use((req, res, next) => {
   const { NOT_FOUND_STATUS_CODE } = require("../utils/constants");
   const { NotFoundError } = require("../utils/errors");
   next(
-    new NotFoundError("Requested resource not found", NOT_FOUND_STATUS_CODE)
+    new NotFoundError("Requested resource not found", NOT_FOUND_STATUS_CODE),
   );
 });
 
