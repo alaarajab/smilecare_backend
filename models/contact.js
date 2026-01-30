@@ -12,7 +12,6 @@ const contactSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
       validate: {
         validator: (value) => validator.isEmail(value),
         message: "Invalid email format",
@@ -38,7 +37,7 @@ const contactSchema = new mongoose.Schema(
       },
     },
   },
-  { timestamps: true } // ✅ Correct place for timestamps
+  { timestamps: true }, // ✅ Correct place for timestamps
 );
 
 module.exports = mongoose.model("Contact", contactSchema);

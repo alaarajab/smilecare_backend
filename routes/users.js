@@ -1,13 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../middlewares/auth"); // JWT verification
-const { getUsers, getUserById, getMe } = require("../controllers/users");
-const { toggleSavedTip } = require("../controllers/users");
 
+const auth = require("../middlewares/auth");
+const {
+  getUsers,
+  getUserById,
+  getMe,
+  toggleSavedTip,
+} = require("../controllers/users");
+
+// All routes below require auth
 router.use(auth);
-router.get("/", getUsers); // fetch all users
-router.get("/me", getMe); // fetch logged-in user
-router.get("/:userId", getUserById); // fetch any user by ID
-router.patch("/me/saved-tips/:tipId", auth, toggleSavedTip);
+
+router.get("/", getUsers);
+router.get("/me", getMe); // IMPORTANT: keep /me before /:userId
+router.get("/:user._id", getUserById);
+
+// no need to add auth again (router.use(auth) already did)
+router.patch("/me/saved-tips/:tipId", toggleSavedTip);
 
 module.exports = router;

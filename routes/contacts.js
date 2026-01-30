@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("../middlewares/auth");
-const { createContact, getContacts } = require("../controllers/contact");
+const { createContact, getContacts } = require("../controllers/contacts");
 const { validateContactBody } = require("../middlewares/validation");
 
 // POST /contacts → anyone can submit a contact form

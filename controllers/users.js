@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -16,21 +17,23 @@ const { JWT_SECRET } = process.env;
 const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({}).select("-password");
-    res.status(OK_STATUS_CODE).json(users);
+    return res.status(OK_STATUS_CODE).json(users);
   } catch (error) {
-    next(new BadRequestError(error.message));
+    return next(new BadRequestError(error.message));
   }
 };
 
-// Get user by ID
+// Get user by ID  (expects route: GET /users/:userId)
 const getUserById = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.userId).select("-password");
+    const { userId } = req.params;
+
+    const user = await User.findById(userId).select("-password");
     if (!user) throw new NotFoundError("User not found");
 
-    res.status(OK_STATUS_CODE).json(user);
+    return res.status(OK_STATUS_CODE).json(user);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
@@ -43,19 +46,24 @@ const createUser = async (req, res, next) => {
     if (existingUser) throw new ConflictError("Email already registered");
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword });
-    await newUser.save();
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      savedTips: [],
+    });
 
-    res.status(CREATED_STATUS_CODE).json({
+    return res.status(CREATED_STATUS_CODE).json({
       message: "User created successfully",
       user: {
         id: newUser._id,
         name: newUser.name,
         email: newUser.email,
+        savedTips: newUser.savedTips,
       },
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
@@ -63,6 +71,7 @@ const createUser = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+
     const user = await User.findOne({ email }).select("+password");
     if (!user) throw new UnauthorizedError("Invalid email or password");
 
@@ -70,54 +79,62 @@ const loginUser = async (req, res, next) => {
     if (!isPasswordValid)
       throw new UnauthorizedError("Invalid email or password");
 
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: "1h" },
-    );
+    // ✅ Commit to req.user._id: store _id in token payload
+    const token = jwt.sign({ _id: user._id.toString() }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
-    res.status(OK_STATUS_CODE).json({
+    return res.status(OK_STATUS_CODE).json({
       message: "Login successful",
       token,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
+        savedTips: user.savedTips || [],
       },
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
+
+// Get current user (protected)  GET /users/me
 const getMe = async (req, res, next) => {
   try {
-    // req.user is set by auth middleware (JWT verified)
-    const user = await User.findById(req.user.userId).select("-password");
+    // ✅ auth middleware must set req.user._id from token
+    const user = await User.findById(req.user._id).select("-password");
     if (!user) throw new NotFoundError("User not found");
 
-    res.status(OK_STATUS_CODE).json(user);
+    return res.status(OK_STATUS_CODE).json(user);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
+
+// Toggle saved tip (protected)  PATCH /users/me/saved-tips/:tipId
 const toggleSavedTip = async (req, res, next) => {
   try {
-    const { userId } = req.params;
-    const { tipId } = req.body;
+    const { tipId } = req.params;
 
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const user = await User.findById(req.user._id);
+    if (!user) throw new NotFoundError("User not found");
+    console.log("TIP:", tipId);
+    console.log("BEFORE:", user.savedTips);
 
-    if (user.savedCards.includes(tipId)) {
-      user.savedCards = user.savedCards.filter((id) => id !== tipId);
-    } else {
-      user.savedCards.push(tipId);
-    }
+    const saved = user.savedTips || [];
+    const alreadySaved = saved.includes(tipId);
+
+    user.savedTips = alreadySaved
+      ? saved.filter((id) => id !== tipId)
+      : [...saved, tipId];
 
     await user.save();
-    res.status(200).json({ savedCards: user.savedCards });
+    console.log("AFTER:", user.savedTips);
+
+    return res.status(OK_STATUS_CODE).json({ savedTips: user.savedTips });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 

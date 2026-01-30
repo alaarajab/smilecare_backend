@@ -27,7 +27,10 @@ const userSchema = new mongoose.Schema(
       select: false, // 🔐 exclude password by default
     },
 
-    savedTips: [{ type: mongoose.Schema.Types.ObjectId, ref: "DentalTip" }],
+    savedTips: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,
