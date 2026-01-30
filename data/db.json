@@ -1,0 +1,94 @@
+{
+  "dentalTips": [
+    {
+      "id": "toothache",
+      "title": "Toothache",
+      "description": "Avoid very hot or cold drinks to reduce pain.",
+      "nutrition": ["Calcium-rich foods", "Soft foods"]
+    },
+    {
+      "id": "gum-pain",
+      "title": "Gum Pain",
+      "description": "Gentle brushing and flossing help reduce inflammation.",
+      "nutrition": ["Spinach", "Oranges", "Yogurt"]
+    },
+    {
+      "id": "bad-breath",
+      "title": "Bad Breath",
+      "description": "Brush your tongue and drink plenty of water.",
+      "nutrition": ["Apples", "Carrots", "Green tea"]
+    },
+    {
+      "id": "cavities",
+      "title": "Cavities",
+      "description": "Limit sugary snacks and brush twice a day.",
+      "nutrition": ["Cheese", "Leafy greens", "Milk"]
+    },
+    {
+      "id": "sensitive-teeth",
+      "title": "Sensitive Teeth",
+      "description": "Use a soft-bristled toothbrush and desensitizing toothpaste.",
+      "nutrition": ["Bananas", "Oatmeal", "Yogurt"]
+    },
+    {
+      "id": "plaque",
+      "title": "Plaque",
+      "description": "Brush and floss regularly to prevent plaque buildup.",
+      "nutrition": ["Apples", "Celery", "Carrots"]
+    },
+    {
+      "id": "tartar",
+      "title": "Tartar",
+      "description": "Regular professional cleaning helps remove tartar.",
+      "nutrition": ["Cheese", "Leafy greens", "Almonds"]
+    },
+    {
+      "id": "tooth-discoloration",
+      "title": "Tooth Discoloration",
+      "description": "Limit coffee, tea, and tobacco to prevent stains.",
+      "nutrition": ["Strawberries", "Watermelon", "Apples"]
+    },
+    {
+      "id": "braces-care",
+      "title": "Braces Care",
+      "description": "Use orthodontic toothbrushes and avoid sticky foods.",
+      "nutrition": ["Soft fruits", "Yogurt", "Cheese"]
+    },
+    {
+      "id": "oral-ulcers",
+      "title": "Oral Ulcers",
+      "description": "Avoid spicy or acidic foods to reduce irritation.",
+      "nutrition": ["Bananas", "Rice", "Yogurt"]
+    },
+    {
+      "id": "dry-mouth",
+      "title": "Dry Mouth",
+      "description": "Drink water frequently and chew sugar-free gum.",
+      "nutrition": ["Celery", "Cucumber", "Apples"]
+    },
+    {
+      "id": "mouth-odor",
+      "title": "Mouth Odor",
+      "description": "Rinse after meals and brush twice daily.",
+      "nutrition": ["Parsley", "Green tea", "Carrots"]
+    },
+    {
+      "id": "oral-cancer-awareness",
+      "title": "Oral Cancer Awareness",
+      "description": "Regular screenings help detect problems early.",
+      "nutrition": ["Leafy greens", "Broccoli", "Tomatoes"]
+    },
+    {
+      "id": "teeth-grinding",
+      "title": "Teeth Grinding",
+      "description": "Wear a mouth guard and reduce stress.",
+      "nutrition": ["Soft foods", "Bananas", "Yogurt"]
+    },
+    {
+      "id": "wisdom-teeth",
+      "title": "Wisdom Teeth",
+      "description": "Maintain good hygiene and visit the dentist regularly.",
+      "nutrition": ["Soft foods", "Mashed potatoes", "Soup"]
+    }
+  ]
+}
