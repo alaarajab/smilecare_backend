@@ -12,33 +12,47 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 const app = express();
 const port = process.env.PORT || 3001;
 
+// -----------------------------
+// CORS
+// -----------------------------
 const allowedOrigins = [
   "http://localhost:3000",
-  process.env.FRONTEND_URL, // https://alaarajab.github.io/smilecare_frontend
+  "http://smilecare.jumpingcrab.com",
+  "https://smilecare.jumpingcrab.com",
+  "http://www.smilecare.jumpingcrab.com",
+  "https://www.smilecare.jumpingcrab.com",
+  process.env.FRONTEND_URL, // optional fallback (e.g., GitHub Pages)
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      // allow requests with no origin (curl, Postman)
-      if (!origin) return callback(null, true);
+const corsOptions = {
+  origin(origin, callback) {
+    // Allow requests with no Origin (curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
 
-      return callback(new Error(`CORS blocked origin: ${origin}`));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-);
+    return callback(new Error(`CORS blocked origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
-// handle preflight
-app.options("*", cors());
+app.use(cors(corsOptions));
+// IMPORTANT: preflight must use the SAME options
+app.options("*", cors(corsOptions));
 
+// -----------------------------
+// Parsers
+// -----------------------------
 app.use(express.json());
 
+// -----------------------------
+// Logging
+// -----------------------------
 app.use(requestLogger);
+
+// Optional debug (kept from your code)
 app.use((req, res, next) => {
   if (req.path === "/api/login" && req.method === "POST") {
     console.log("CONTENT-TYPE:", req.headers["content-type"]);
@@ -46,25 +60,40 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+// -----------------------------
+// Health
+// -----------------------------
 app.get("/health", (req, res) => {
   res.status(200).send({ ok: true });
 });
-// If you want /api prefix, change to: app.use("/api", mainRouter);
+
+// -----------------------------
+// Routes
+// -----------------------------
 app.use("/api", mainRouter);
 
-// 404 for unknown routes (ONLY here)
+// -----------------------------
+// 404 Handler (after routes only)
+// -----------------------------
 app.use((req, res, next) => {
   next(new NotFoundError("Requested resource not found"));
 });
 
+// -----------------------------
+// Error handling
+// -----------------------------
 app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
+// -----------------------------
+// DB + Server start
+// -----------------------------
 mongoose
   .connect("mongodb://127.0.0.1:27017/smilecaredb")
   .then(() => console.log("Connected to MongoDB"))
-  .catch(console.error);
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
