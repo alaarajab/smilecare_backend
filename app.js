@@ -12,15 +12,30 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 const app = express();
 const port = process.env.PORT || 3001;
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  process.env.FRONTEND_URL, // https://alaarajab.github.io/smilecare_frontend
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin(origin, callback) {
+      // allow requests with no origin (curl, Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+
+      return callback(new Error(`CORS blocked origin: ${origin}`));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+
+// handle preflight
 app.options("*", cors());
+
 app.use(express.json());
 
 app.use(requestLogger);
