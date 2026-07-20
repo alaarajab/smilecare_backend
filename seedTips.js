@@ -4,7 +4,7 @@ const DentalTip = require("./models/dental-tip");
 const tipsJson = require("./data/db.json");
 
 const MONGO_URL =
-  process.env.MONGO_URL || "mongodb://127.0.0.1:27017/smilecaredb";
+  process.env.MONGO_URI || "mongodb://127.0.0.1:27017/smilecaredb";
 
 async function seed() {
   await mongoose.connect(MONGO_URL);

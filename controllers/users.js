@@ -113,7 +113,7 @@ const getMe = async (req, res, next) => {
 };
 
 // Toggle saved tip (protected)  PATCH /users/me/saved-tips/:tipId
-const toggleSavedTip = async (req, res, next) => {
+/*const toggleSavedTip = async (req, res, next) => {
   try {
     const { tipId } = req.params;
 
@@ -131,6 +131,33 @@ const toggleSavedTip = async (req, res, next) => {
 
     await user.save();
     console.log("AFTER:", user.savedTips);
+
+    return res.status(OK_STATUS_CODE).json({ savedTips: user.savedTips });
+  } catch (error) {
+    return next(error);
+  }
+};*/
+const toggleSavedTip = async (req, res, next) => {
+  try {
+    const { tipId } = req.params;
+    const { title, description } = req.body;
+
+    const user = await User.findById(req.user._id);
+    if (!user) throw new NotFoundError("User not found");
+
+    const saved = user.savedTips || [];
+    const alreadySaved = saved.some((item) => item.id === tipId);
+
+    if (alreadySaved) {
+      user.savedTips = saved.filter((item) => item.id !== tipId);
+    } else {
+      user.savedTips = [
+        ...saved,
+        { id: tipId, title: title || tipId, description: description || "" },
+      ];
+    }
+
+    await user.save();
 
     return res.status(OK_STATUS_CODE).json({ savedTips: user.savedTips });
   } catch (error) {

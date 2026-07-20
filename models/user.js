@@ -28,7 +28,14 @@ const userSchema = new mongoose.Schema(
     },
 
     savedTips: {
-      type: [String],
+      type: [
+        {
+          id: { type: String, required: true },
+          title: { type: String, required: true },
+          description: { type: String, default: "" },
+          _id: false,
+        },
+      ],
       default: [],
     },
   },
