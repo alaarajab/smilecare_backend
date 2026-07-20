@@ -17,11 +17,8 @@ const port = process.env.PORT || 3001;
 // -----------------------------
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://smilecare.jumpingcrab.com",
-  "https://smilecare.jumpingcrab.com",
-  "http://www.smilecare.jumpingcrab.com",
-  "https://www.smilecare.jumpingcrab.com",
-  process.env.FRONTEND_URL, // optional fallback (e.g., GitHub Pages)
+  "https://smilecare-frontend.onrender.com", // ← your new Render URL
+  process.env.FRONTEND_URL,
 ].filter(Boolean);
 
 const corsOptions = {
